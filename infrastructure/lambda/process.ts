@@ -16,7 +16,7 @@ export const handler = async (event: SQSEvent): Promise<void> => {
       console.log('Processing request:', payload.requestId);
 
       // Construct a prompt for Amazon Bedrock (Claude 3.5 Sonnet)
-      const prompt = `You are an AI logistics assistant for KrishiChain AI.
+      const prompt = `You are an AI logistics assistant for YieldWay-Ai.
 A farmer has requested logistics pickup.
 Details:
 - Crop: ${payload.cropType}
