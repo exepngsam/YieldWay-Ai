@@ -1,0 +1,64 @@
+name: Deploy KrishiChain AI
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write # Required for AWS OIDC authentication
+  contents: read
+
+jobs:
+  deploy-infrastructure:
+    name: Deploy CDK Backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cdk-role
+          aws-region: us-east-1 # Change to your preferred region
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: infrastructure/package-lock.json
+
+      - name: Install CDK Dependencies
+        working-directory: ./infrastructure
+        run: npm ci
+
+      - name: CDK Deploy
+        working-directory: ./infrastructure
+        run: npx cdk deploy --require-approval never
+
+  deploy-frontend:
+    name: Deploy Next.js Frontend
+    runs-on: ubuntu-latest
+    needs: deploy-infrastructure # Only deploy frontend if backend succeeds
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Here you would typically use Vercel, AWS Amplify, or AWS S3+CloudFront actions.
+      # For a hackathon, Vercel is often fastest:
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        working-directory: ./frontend
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project Artifacts
+        working-directory: ./frontend
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Project Artifacts to Vercel
+        working-directory: ./frontend
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
