@@ -12,9 +12,11 @@
     "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.7.0",
     "framer-motion": "^13.2.0",
+    "lucide-react": "^1.43.0",
     "next": "16.3.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "recharts": "^3.10.1",
     "three": "^0.186.0"
   },
   "devDependencies": {

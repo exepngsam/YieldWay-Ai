@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import ThreeDScene from '@/components/ThreeDScene';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -27,7 +29,7 @@ export default function Home() {
 
       if (!response.ok) throw new Error('API Request Failed');
       
-      setStatus('Success! Request queued. AI is calculating optimal route & selling window.');
+      setStatus('Success! Request queued.');
       setFormData({ ...formData, cropType: '', quantity: '', location: '' });
     } catch (error) {
       console.error(error);
@@ -69,13 +71,13 @@ export default function Home() {
                 onChange={(e) => setFormData({ ...formData, cropType: e.target.value })}
               >
                 <option value="" disabled className="text-gray-500">Select a crop...</option>
-                <option value="Tomatoes" className="text-black">Tomatoes</option>
-                <option value="Onions" className="text-black">Onions</option>
-                <option value="Potatoes" className="text-black">Potatoes</option>
-                <option value="Wheat" className="text-black">Wheat</option>
-                <option value="Rice" className="text-black">Rice</option>
-                <option value="Sugarcane" className="text-black">Sugarcane</option>
-                <option value="Cotton" className="text-black">Cotton</option>
+                <option value="Tomatoes" className="text-white">Tomatoes</option>
+                <option value="Onions" className="text-white">Onions</option>
+                <option value="Potatoes" className="text-white">Potatoes</option>
+                <option value="Wheat" className="text-white">Wheat</option>
+                <option value="Rice" className="text-white">Rice</option>
+                <option value="Sugarcane" className="text-white">Sugarcane</option>
+                <option value="Cotton" className="text-white">Cotton</option>
               </select>
             </div>
             
@@ -120,8 +122,24 @@ export default function Home() {
               className={`mt-6 p-4 rounded-xl text-sm font-medium border backdrop-blur-md ${status.includes('Success') ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : 'bg-red-500/20 text-red-300 border-red-500/30'}`}
             >
               {status}
+              {status.includes('Success') && (
+                <div className="mt-3">
+                  <Link href="/dashboard">
+                    <button className="flex items-center justify-center gap-2 w-full py-2 bg-emerald-500/20 hover:bg-emerald-500/30 rounded-lg transition-colors border border-emerald-500/50">
+                      View AI Dashboard <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </Link>
+                </div>
+              )}
             </motion.div>
           )}
+
+          {/* Quick link to dashboard even before submit */}
+          <div className="mt-8 text-center">
+             <Link href="/dashboard" className="text-gray-400 hover:text-cyan-400 transition-colors text-xs font-medium tracking-wide flex items-center justify-center gap-1">
+               Go to Dashboard <ArrowRight className="w-3 h-3" />
+             </Link>
+          </div>
         </div>
       </motion.div>
     </main>
